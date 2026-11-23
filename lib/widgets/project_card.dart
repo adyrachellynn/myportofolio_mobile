@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+
+import '../screens/education_form.dart';
 import '../screens/project_form.dart';
 
 class ItemHomepage {
@@ -32,6 +34,14 @@ class ItemCard extends StatelessWidget {
             Navigator.push(
               context,
               MaterialPageRoute(builder: (context) => const ProjectFormPage()),
+            );
+          }
+          if (item.name == 'Tambah Education') {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const EducationFormPage(),
+              ),
             );
           }
         },

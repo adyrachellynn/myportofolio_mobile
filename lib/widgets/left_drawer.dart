@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+
+import '../screens/education_form.dart';
 import '../screens/menu.dart';
 import '../screens/project_form.dart';
 
@@ -47,7 +49,21 @@ class LeftDrawer extends StatelessWidget {
             onTap: () {
               Navigator.pushReplacement(
                 context,
-                MaterialPageRoute(builder: (context) => const ProjectFormPage()),
+                MaterialPageRoute(
+                  builder: (context) => const ProjectFormPage(),
+                ),
+              );
+            },
+          ),
+          ListTile(
+            leading: const Icon(Icons.school_outlined),
+            title: const Text('Add Education'),
+            onTap: () {
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const EducationFormPage(),
+                ),
               );
             },
           ),
