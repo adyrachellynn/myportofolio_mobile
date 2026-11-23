@@ -53,6 +53,15 @@ class _EducationFormPageState extends State<EducationFormPage> {
                       _title = value;
                     });
                   },
+                  validator: (value) {
+                    if (value == null || value.trim().isEmpty) {
+                      return 'Nama gelar / sertifikasi tidak boleh kosong!';
+                    }
+                    if (value.runes.length > 255) {
+                      return 'Nama gelar / sertifikasi maksimal 255 karakter!';
+                    }
+                    return null;
+                  },
                 ),
               ),
               Padding(
@@ -69,6 +78,15 @@ class _EducationFormPageState extends State<EducationFormPage> {
                     setState(() {
                       _institution = value;
                     });
+                  },
+                  validator: (value) {
+                    if (value == null || value.trim().isEmpty) {
+                      return 'Institusi / penyelenggara tidak boleh kosong!';
+                    }
+                    if (value.runes.length > 255) {
+                      return 'Institusi / penyelenggara maksimal 255 karakter!';
+                    }
+                    return null;
                   },
                 ),
               ),
@@ -110,6 +128,15 @@ class _EducationFormPageState extends State<EducationFormPage> {
                       _year = value;
                     });
                   },
+                  validator: (value) {
+                    if (value == null || value.trim().isEmpty) {
+                      return 'Tahun / periode tidak boleh kosong!';
+                    }
+                    if (value.runes.length > 50) {
+                      return 'Tahun / periode maksimal 50 karakter!';
+                    }
+                    return null;
+                  },
                 ),
               ),
               Padding(
@@ -145,9 +172,93 @@ class _EducationFormPageState extends State<EducationFormPage> {
                       _imageUrl = value;
                     });
                   },
+                  validator: (value) {
+                    final url = value?.trim() ?? '';
+                    if (url.isEmpty) return null;
+                    final uri = Uri.tryParse(url);
+                    if (uri == null ||
+                        (uri.scheme != 'http' && uri.scheme != 'https') ||
+                        !uri.hasAuthority ||
+                        uri.host.isEmpty ||
+                        uri.port > 65535 ||
+                        RegExp(r'\s').hasMatch(url) ||
+                        (!uri.host.contains(':') &&
+                            !uri.host
+                                .split('.')
+                                .every(
+                                  (label) => RegExp(
+                                    r'^[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?$',
+                                  ).hasMatch(label),
+                                ))) {
+                      return 'Masukkan URL http atau https yang valid!';
+                    }
+                    return null;
+                  },
                 ),
               ),
-
+              Align(
+                alignment: Alignment.bottomCenter,
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: ElevatedButton(
+                    style: ButtonStyle(
+                      backgroundColor: WidgetStateProperty.all(Colors.indigo),
+                    ),
+                    onPressed: () {
+                      if (_formKey.currentState!.validate()) {
+                        showDialog(
+                          context: context,
+                          builder: (context) {
+                            return AlertDialog(
+                              title: const Text(
+                                'Education berhasil ditambahkan!',
+                              ),
+                              content: SingleChildScrollView(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text('Nama Gelar / Sertifikasi: $_title'),
+                                    Text(
+                                      'Institusi / Penyelenggara: $_institution',
+                                    ),
+                                    Text('Deskripsi: $_description'),
+                                    Text('Kategori: $_category'),
+                                    Text('Tahun / Periode: $_year'),
+                                    Text(
+                                      'URL Gambar / Logo Institusi: $_imageUrl',
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              actions: [
+                                TextButton(
+                                  onPressed: () {
+                                    Navigator.pop(context);
+                                    _formKey.currentState!.reset();
+                                    setState(() {
+                                      _title = '';
+                                      _institution = '';
+                                      _description = '';
+                                      _category = 'Formal Education';
+                                      _year = '';
+                                      _imageUrl = '';
+                                    });
+                                  },
+                                  child: const Text('OK'),
+                                ),
+                              ],
+                            );
+                          },
+                        );
+                      }
+                    },
+                    child: const Text(
+                      'Simpan',
+                      style: TextStyle(color: Colors.white),
+                    ),
+                  ),
+                ),
+              ),
             ],
           ),
         ),
