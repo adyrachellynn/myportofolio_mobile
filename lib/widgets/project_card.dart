@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:myportofolio_mobile/services/auth_state.dart';
+import 'package:myportofolio_mobile/widgets/auth_guard.dart';
 
 import '../screens/education_form.dart';
 import '../screens/project_form.dart';
@@ -23,7 +26,7 @@ class ItemCard extends StatelessWidget {
       color: item.color,
       borderRadius: BorderRadius.circular(12),
       child: InkWell(
-        onTap: () {
+        onTap: () async {
           ScaffoldMessenger.of(context)
             ..hideCurrentSnackBar()
             ..showSnackBar(
@@ -40,10 +43,18 @@ class ItemCard extends StatelessWidget {
             );
           }
           if (item.name == 'Tambah Proyek') {
+            if (!await ensureLoggedIn(context) || !context.mounted) return;
             Navigator.push(
               context,
               MaterialPageRoute(builder: (context) => const ProjectFormPage()),
             );
+          }
+          if (item.name == 'Logout') {
+            await context.read<AuthState>().logout();
+            if (!context.mounted) return;
+            ScaffoldMessenger.of(context)
+              ..hideCurrentSnackBar()
+              ..showSnackBar(const SnackBar(content: Text('Logout berhasil.')));
           }
           if (item.name == 'Tambah Education') {
             Navigator.push(

@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:myportofolio_mobile/services/auth_state.dart';
+import 'package:myportofolio_mobile/services/api_client.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:myportofolio_mobile/main.dart';
 import 'package:myportofolio_mobile/screens/education_form.dart';
@@ -26,11 +29,24 @@ Future<void> save(WidgetTester tester) async {
   await tester.pumpAndSettle();
 }
 
+Widget educationApp() => MultiProvider(
+  providers: [
+    Provider<ApiClient>(
+      create: (_) => ApiClient(),
+      dispose: (_, api) => api.close(),
+    ),
+    ChangeNotifierProvider(
+      create: (context) => AuthState(context.read<ApiClient>()),
+    ),
+  ],
+  child: const MaterialApp(home: EducationFormPage()),
+);
+
 void main() {
   testWidgets('Required fields, limits, and optional HTTP(S) URL validation', (
     tester,
   ) async {
-    await tester.pumpWidget(const MaterialApp(home: EducationFormPage()));
+    await tester.pumpWidget(educationApp());
     for (final entry in {
       'Nama Gelar / Sertifikasi': 255,
       'Institusi / Penyelenggara': 255,
@@ -78,7 +94,7 @@ void main() {
     tester.view.devicePixelRatio = 1;
     addTearDown(tester.view.resetPhysicalSize);
     addTearDown(tester.view.resetDevicePixelRatio);
-    await tester.pumpWidget(const MaterialApp(home: EducationFormPage()));
+    await tester.pumpWidget(educationApp());
     await enter(tester, 'Nama Gelar / Sertifikasi', 'S1 Sistem Informasi');
     await enter(tester, 'Institusi / Penyelenggara', 'Universitas Indonesia');
     await enter(tester, 'Tahun / Periode', '2025 - Sekarang');

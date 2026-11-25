@@ -1,5 +1,7 @@
 import 'dart:async';
 
+import 'package:myportofolio_mobile/services/auth_state.dart';
+
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
@@ -13,7 +15,10 @@ import 'package:myportofolio_mobile/services/api_client.dart';
 import 'package:provider/provider.dart';
 
 Widget app(ApiClient api) => MultiProvider(
-  providers: [Provider<ApiClient>.value(value: api)],
+  providers: [
+    Provider<ApiClient>.value(value: api),
+    ChangeNotifierProvider(create: (_) => AuthState(api)),
+  ],
   child: const MaterialApp(home: ProjectListScreen()),
 );
 

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:myportofolio_mobile/services/auth_state.dart';
 import 'package:provider/provider.dart';
 import 'package:myportofolio_mobile/services/api_client.dart';
 import 'package:myportofolio_mobile/screens/menu.dart';
@@ -19,6 +20,9 @@ class MyApp extends StatelessWidget {
         Provider<ApiClient>(
           create: (_) => apiClient ?? ApiClient(),
           dispose: (_, client) => client.close(),
+        ),
+        ChangeNotifierProvider(
+          create: (context) => AuthState(context.read<ApiClient>()),
         ),
       ],
       child: MaterialApp(
