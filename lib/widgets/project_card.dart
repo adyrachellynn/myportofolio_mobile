@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../screens/education_form.dart';
 import '../screens/project_form.dart';
+import '../screens/project_list_screen.dart';
 
 class ItemHomepage {
   final String name;
@@ -30,6 +31,14 @@ class ItemCard extends StatelessWidget {
                 content: Text('Kamu telah menekan tombol ${item.name}!'),
               ),
             );
+          if (item.name == 'Lihat Proyek') {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const ProjectListScreen(),
+              ),
+            );
+          }
           if (item.name == 'Tambah Proyek') {
             Navigator.push(
               context,
